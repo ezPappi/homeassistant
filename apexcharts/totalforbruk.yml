@@ -1,0 +1,74 @@
+type: custom:apexcharts-card
+apex_config:
+  chart:
+    stacked: true
+graph_span: 1month
+experimental:
+  color_threshold: true
+update_interval: 15m
+cache: true
+span:
+  end: day
+header:
+  show: true
+  colorize_states: true
+  standard_format: true
+  title: Total daglig KWh og strømpris
+  show_states: true
+now:
+  show: true
+  color: white
+  label: NOW
+yaxis:
+  - id: forbruk
+    decimals: 0
+    min: 0
+    max: auto
+  - id: kost
+    decimals: 1
+    min: 0
+    max: auto
+    opposite: true
+series:
+  - entity: sensor.accumulated_consumption_home
+    name: Total daglig forbruk KWh
+    type: column
+    stroke_width: 2
+    yaxis_id: forbruk
+    show:
+      legend_value: true
+      extremas: false
+    group_by:
+      func: max
+      duration: 1d
+    color_threshold:
+      - value: 0
+        color: blue
+      - value: 20
+        color: green
+      - value: 30
+        color: green
+      - value: 35
+        color: yellow
+      - value: 40
+        color: yellow
+      - value: 45
+        color: orange
+      - value: 50
+        color: orange
+      - value: 60
+        color: red
+      - value: 70
+        color: red
+  - entity: sensor.accumulated_cost_home
+    name: Total strømkostnad
+    type: line
+    color: 00B3F4
+    stroke_width: 3
+    yaxis_id: kost
+    show:
+      legend_value: true
+      extremas: false
+    group_by:
+      func: max
+      duration: 1d

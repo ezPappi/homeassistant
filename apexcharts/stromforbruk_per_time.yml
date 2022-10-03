@@ -1,0 +1,53 @@
+type: custom:apexcharts-card
+apex_config:
+  chart:
+    stacked: true
+graph_span: 1d
+experimental:
+  color_threshold: true
+update_interval: 15s
+span:
+  end: day
+header:
+  show: true
+  colorize_states: true
+  standard_format: true
+  title: Strømforbruk i dag
+  show_states: true
+now:
+  show: true
+  color: white
+  label: NOW
+hours_12: false
+yaxis:
+  - id: forbruk
+    decimals: 1
+    min: 0
+    max: auto
+series:
+  - entity: sensor.average_power_home
+    name: Gjennomsnittlig forbruk inneværende time
+    type: column
+    stroke_width: 2
+    yaxis_id: forbruk
+    show:
+      extremas: true
+      legend_value: false
+    group_by:
+      func: max
+      duration: 1h
+    color_threshold:
+      - value: 0
+        color: blue
+      - value: 250
+        color: green
+      - value: 500
+        color: yellow
+      - value: 500
+        color: yellow
+      - value: 750
+        color: yellow
+      - value: 1000
+        color: orange
+      - value: 2000
+        color: red

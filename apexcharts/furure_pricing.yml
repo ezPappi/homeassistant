@@ -1,0 +1,37 @@
+type: custom:apexcharts-card
+graph_span: 36h
+experimental:
+  color_threshold: true
+header:
+  title: Strømpris i dag og i morgen
+  show: true
+  show_states: true
+apex_config:
+  yaxis:
+    min: 0
+hours_12: false
+cache: true
+span:
+  start: hour
+  offset: '-8h'
+now:
+  show: true
+  label: Now
+series:
+  - entity: sensor.nordpool_kwh_oslo_nok_3_10_025
+    type: column
+    data_generator: |
+      return (entity.attributes.raw_today.map((start, index) => {
+        return [new Date(start["start"]).getTime(), entity.attributes.raw_today[index]["value"]];
+      })).concat(entity.attributes.raw_tomorrow.map((start, index) => {
+        return [new Date(start["start"]).getTime(), entity.attributes.raw_tomorrow[index]["value"]];
+      }));
+    color_threshold:
+      - value: 0
+        color: var(--warning-color)
+      - value: 1
+        color: var(--success-color)
+      - value: 3
+        color: var(--warning-color)
+      - value: 5
+        color: var(--warning-color)
