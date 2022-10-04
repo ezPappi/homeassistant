@@ -1,0 +1,44 @@
+# Helper to keep the start time
+input_datetime:
+  device_start_time:
+    name: Device Start Time
+    has_time: true
+    has_date: false
+
+automation:
+# Update time trigger to cheapest hours
+  - id: '1663398489357'
+    alias: 'Set device start time'
+    description: ''
+    trigger:
+    - platform: time
+      at: '18:00:00'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.cheapest_hours_energy_tomorrow
+        state: unknown
+    action:
+    - service: input_datetime.set_datetime
+      data:
+        time: '{{ as_timestamp(states(''sensor.cheapest_hours_energy_tomorrow'')) | timestamp_custom(''%H:%M'') }}'
+      target:
+        entity_id: input_datetime.device_start_time
+    mode: single
+
+# Finally do the actions when time trigger is hit
+  - id: '1663399614818'
+    alias: Increase heating
+    description: ''
+    trigger:
+    - platform: time
+      at: input_datetime.device_start_time
+    condition: []
+    action:
+    - service: climate.set_temperature
+      data:
+        temperature: 24
+      target:
+        entity_id: climate.heat_pump
+    mode: single

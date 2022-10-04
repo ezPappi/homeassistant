@@ -1,0 +1,27 @@
+sensor:
+  - platform: template
+    sensors:
+      cheapest_hours_energy_tomorrow:
+        device_class: timestamp
+        friendly_name: Cheapest sequential electricity hours
+        value_template: >
+          {%- set numberOfSequentialHours = 3 -%}
+          {%- set lastHour = 23 -%}
+          {%- set firstHour = 0 -%}
+
+          {%- if state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow_valid') == true -%}
+            {%- set ns = namespace(counter=0, list=[], cheapestHour=today_at("00:00") + timedelta( hours = (24)), cheapestPrice=999.00) -%}
+            {%- for i in range(firstHour + numberOfSequentialHours, lastHour+1) -%}
+              {%- set ns.counter = 0.0 -%}
+              {%- for j in range(i-numberOfSequentialHours, i) -%}
+                {%- set ns.counter = ns.counter + state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow')[j] -%}
+              {%- endfor -%}
+              {%- set ns.list = ns.list + [ns.counter] -%}
+              {%- if ns.counter < ns.cheapestPrice -%}
+                {%- set ns.cheapestPrice = ns.counter -%}
+                {%- set ns.cheapestHour = today_at("00:00") + timedelta( hours = (24 + i - numberOfSequentialHours)) -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.cheapestHour }}
+            {%- set ns.cheapestPrice = ns.cheapestPrice / numberOfSequentialHours -%}
+          {%- endif -%}
