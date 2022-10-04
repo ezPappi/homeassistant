@@ -2,10 +2,10 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
-graph_span: 1month
+graph_span: 1week
 experimental:
   color_threshold: true
-update_interval: 15m
+update_interval: 5m
 cache: true
 span:
   end: day
@@ -13,12 +13,11 @@ header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Total daglig KWh og strømpris
+  title: Daglig KWh og strømpris
   show_states: true
 now:
   show: true
-  color: white
-  label: NOW
+  label: Now
 yaxis:
   - id: forbruk
     decimals: 0
@@ -31,8 +30,8 @@ yaxis:
     opposite: true
 series:
   - entity: sensor.accumulated_consumption_home
-    name: Total daglig forbruk KWh
-    type: column
+    name: Daglig forbruk KWh
+    type: area
     stroke_width: 2
     yaxis_id: forbruk
     show:
@@ -61,7 +60,7 @@ series:
       - value: 70
         color: red
   - entity: sensor.accumulated_cost_home
-    name: Total strømkostnad
+    name: Daglig strømkostnad
     type: line
     color: 00B3F4
     stroke_width: 3

@@ -2,7 +2,7 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
-graph_span: 1month
+graph_span: 1week
 experimental:
   color_threshold: true
 update_interval: 5m
@@ -17,6 +17,7 @@ header:
   show_states: true
 now:
   show: true
+  label: Now
 yaxis:
   - id: kost
     decimals: 0
@@ -26,9 +27,9 @@ yaxis:
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.accumulated_cost_home
+  - entity: sensor.accumulated_cost_yourhome
     name: Kostnad
-    type: column
+    type: area
     stroke_width: 2
     show:
       legend_value: true
