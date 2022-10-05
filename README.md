@@ -1,6 +1,6 @@
 # Home Assistant
 
-## Stuff related to homeassistant
+## Stuff related to Home Assistant
 
 #### Most stuff here is installed using [HACKS](https://hacs.xyz) - Home Assistant Community Store.
 #### And most of the yml files use [ApexCharts Card](https://github.com/RomRider).
