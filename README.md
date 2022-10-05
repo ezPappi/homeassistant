@@ -7,5 +7,5 @@
 #### To fetch power prices I use the [Nordbpool integration](https://github.com/custom-components/nordpool/)
 
 ### Some aditional links: 
-* [Power Saver](https://powersaver.no)
-* [Node-RED](https://nodered.org)
+* [Node-RED](https://nodered.org) - Programming tool for wiring together hardware devices, APIs and online services
+* [Power Saver](https://powersaver.no) - A collection of nodes to Node-RED that automates saving money on variable electricity prices
