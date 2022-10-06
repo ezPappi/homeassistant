@@ -1,0 +1,57 @@
+{% set today_price = states.sensor.nordpool_kwh_oslo_nok_3_10_025.attributes.today %}
+{% set tomorrow_price = states.sensor.nordpool_kwh_oslo_nok_3_10_025.attributes.tomorrow %}
+
+Dagens priser:
+{{ today_price }}
+
+Morgendagens priser:
+{{ tomorrow_price }}
+
+{% set current_hour =  now().hour -%}
+Gjeldene time: {{ current_hour }}
+
+Pris nå: {{ today_price[current_hour]}}
+
+Videre priser i dag: {{ today_price[current_hour:]}}
+
+{% set future_price = today_price[current_hour:] + tomorrow_price -%} 
+Fremtidige priser: {{ future_price}}
+
+Snitt av fremtidige priser: {{ future_price | average | round(3) }}
+Min av fremtidige priser: {{ future_price | min | round(3) }}
+Max av fremtidige priser: {{ future_price | max | round(3) }}
+
+{% set inteval_start_tomorrow = 0 -%}
+{% set interval_start_hour =  22 -%}
+
+{% set interval_end_tomorrow = 1 -%}
+{% set interval_end_hour = 7 -%}
+
+{% set low_interval_length = 3 -%}
+
+{% set all_price = today_price + tomorrow_price -%}
+{% set interval_price = all_price[interval_start_hour + 24 * inteval_start_tomorrow : interval_end_hour + 24 * interval_end_tomorrow] -%}
+{% set last_considered_interval_index = (interval_price | length) - low_interval_length + 1 -%}
+
+Intervall priser: {{ interval_price }}
+Snitt av intervall priser: {{ interval_price | average | round(3) }}
+Min av intervall priser: {{ interval_price | min | round(3) }}
+Max av intervall priser: {{ interval_price | max | round(3) }}
+
+{% set ns = namespace(current_best_average=1000, current_best_index=-1) -%}  
+{% for price in interval_price[:last_considered_interval_index] -%}
+  {% set current_average =  interval_price[loop.index0:loop.index0+low_interval_length] | average -%}
+  {% if current_average < ns.current_best_average -%}
+    {%-set ns.current_best_average = current_average -%}
+    {% set ns.current_best_index = loop.index0 -%}
+  {% endif -%}
+{% endfor -%}
+
+{%- set start_index = ns.current_best_index %}
+{%- set best_interval_price = interval_price[start_index:start_index+low_interval_length] %}
+Beste invervall priser: {{ best_interval_price }}
+
+{% set best_interval_start_hour =  24 * inteval_start_tomorrow + interval_start_hour + start_index -%}
+
+Beste {{ low_interval_length }} timers intervall starter kl {{ best_interval_start_hour % 24 }} i {% if best_interval_start_hour < 24 %}dag {% else 
+%}morgen {% endif %}og snitt-prisen er {{ best_interval_price| average | round(3) }}
