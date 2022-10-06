@@ -4,7 +4,7 @@ experimental:
   color_threshold: true
 update_interval: 15m
 header:
-  title: Strømpris i NOK i dag og i morgen
+  title: Strømpris i dag og i morgen
   show: true
   colorize_states: true
   standard_format: true

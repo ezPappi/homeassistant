@@ -29,7 +29,7 @@ yaxis:
     max: auto
     opposite: true
 series:
-  - entity: sensor.accumulated_consumption_home
+  - entity: sensor.accumulated_consumption_orreveien
     name: Daglig forbruk KWh
     type: area
     stroke_width: 2
@@ -59,7 +59,7 @@ series:
         color: red
       - value: 70
         color: red
-  - entity: sensor.accumulated_cost_home
+  - entity: sensor.accumulated_cost_orreveien
     name: Daglig strømkostnad
     type: line
     color: 00B3F4
