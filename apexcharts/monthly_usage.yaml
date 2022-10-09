@@ -27,12 +27,18 @@ yaxis:
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.accumulated_cost_orreveien
+  - entity: sensor.accumulated_consumption_orreveien
+  - entity: sensor.nordpool_kwh_oslo_nok_3_10_025
     name: Kostnad
     type: column
     stroke_width: 2
     show:
       legend_value: true
+      extremas: true
+    data_generator: |
+      return (entity.attributes.raw_today.map((start, index) => {
+        return [new Date(start["start"]).getTime(), entity.sensor.accumulated_consumption_orreveien/entity.attributes.raw_today[index]["value"]];
+      }));
     group_by:
       func: max
       duration: 1month

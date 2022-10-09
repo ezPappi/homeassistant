@@ -1,27 +1,13 @@
-  - platform: mqtt
-    state_topic: "Bathroom/state/BEREDER"
-    name: "BerederStatus"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    device_class: power
-
-  - platform: mqtt
-    state_topic: "Porch/state/JACUZZI"
-    name: "JacuzziStatus"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    device_class: power
-
-  - platform: ping
-    host: 192.168.99.1
-    count: 4
-    scan_interval: 60
-    name: odin
+- platform: ping
+  host: 192.168.99.1
+  count: 4
+  scan_interval: 60
+  name: odin
     
-  - platform: ping
-    host: 192.168.99.123
-    count: 4
-    scan_interval: 60
-    name: gateway
+- platform: ping
+  host: 192.168.99.123
+  count: 4
+  scan_interval: 60
+  name: gateway
+    
+ 

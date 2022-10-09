@@ -53,5 +53,14 @@ Beste invervall priser: {{ best_interval_price }}
 
 {% set best_interval_start_hour =  24 * inteval_start_tomorrow + interval_start_hour + start_index -%}
 
-Beste {{ low_interval_length }} timers intervall starter kl {{ best_interval_start_hour % 24 }} i {% if best_interval_start_hour < 24 %}dag {% else 
-%}morgen {% endif %}og snitt-prisen er {{ best_interval_price| average | round(3) }}
+Beste {{ low_interval_length }} timers intervall starter kl {{ best_interval_start_hour % 24 }} i {% if best_interval_start_hour < 24 %}dag {% else %}morgen {% endif %}og snitt-prisen er {{ best_interval_price| average | round(3) }}
+
+{% set today_price = states.sensor.nordpool_kwh_oslo_nok_3_10_025.attributes.today %}
+{% set total_consumption = states('sensor.accumulated_consumption_orreveien') | float -%}
+{% set price_now = today_price[current_hour] | float -%}
+{% set cost_now = total_consumption / price_now -%}
+
+Forbruk i KWh: {{ total_consumption }}
+Strømris nå: {{ price_now }}
+Nåværende kostnad : {{ cost_now }}
+

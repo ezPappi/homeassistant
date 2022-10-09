@@ -1,0 +1,13 @@
+max_price:
+  name: Maks Pris
+  min: 0
+  max: 10
+  step: 0.1
+  icon: mdi:cash-lock
+  unit_of_measurement: kr/kKWt
+number_of_hours:
+  name: Antall Timer
+  min: 0
+  max: 24
+  step: 1
+  icon: mdi:clock

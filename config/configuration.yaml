@@ -1,0 +1,37 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+input_number: !include input_number.yaml
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+input_boolean: !include input_boolean.yaml
+binary_sensor: !include binary_sensor.yaml
+sensor: !include sensor.yaml
+
+template:
+  - binary_sensor:
+      - name: Lav Spotpris
+        state: |
+          {% set today_price = state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today') %}
+          {% set current = state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'current_price') %}
+          {% set number_of_hours =  states('input_number.number_of_hours') | int %}
+          {% set max_price =  states('input_number.max_price') | float %}
+          {% if number_of_hours == 0 %}
+            {% set price_limit = 0 %}
+          {% else %}
+            {% set price_limit =  (today_price | sort)[number_of_hours-1] %}
+          {% endif %}
+          {% set limit = ([ price_limit, max_price ]) | min %}
+          {{current <= limit}}
+
+
