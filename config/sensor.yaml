@@ -1,0 +1,7 @@
+- platform: template
+  sensors:
+      power_cost_right_now:
+        friendly_name: "Strømpris"
+        unit_of_measurement: "NOK"
+        value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_orreveien') | float }}"
+
