@@ -8,3 +8,29 @@
         friendly_name: "Daglig Strømkostnad"
         unit_of_measurement: "NOK"
         value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_orreveien') | float }}"
+
+# Weather prediction
+- platform: weather_data
+  name: Weather
+  forecast: 24
+  monitored_conditions:
+      - temperature
+      - symbol
+      - precipitation
+      - windSpeed
+      - pressure
+      - windDirection
+      - humidity
+      - fog
+      - cloudiness
+      - lowClouds
+      - mediumClouds
+      - highClouds
+      - dewpointTemperature
+- platform: template
+  sensors:
+      weather_data:
+        friendly_name: "Weather Temperature"
+        unit_of_measurement: 'degrees'
+        value_template: "{{ state_attr('weather_data.karlshus', 'temperature') }}"
+
