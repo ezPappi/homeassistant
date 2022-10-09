@@ -15,7 +15,7 @@ apex_config:
 graph_span: 1w
 experimental:
   color_threshold: true
-update_interval: 5m
+update_interval: 15s
 cache: true
 span:
   end: day

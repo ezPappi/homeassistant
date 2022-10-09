@@ -3,5 +3,8 @@
       power_cost_right_now:
         friendly_name: "Strømkostnad"
         unit_of_measurement: "NOK"
+        value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_current_hour_orreveien') | float }}"
+      daily_power_cost:
+        friendly_name: "Daglig Strømkostnad"
+        unit_of_measurement: "NOK"
         value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_orreveien') | float }}"
-
