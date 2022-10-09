@@ -2,18 +2,28 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
-graph_span: 1year
+    zoom:
+      enabled: true
+    toolbar:
+      show: true
+      tools:
+        zoom: true
+        zoomin: true
+        zoomout: true
+        pan: true
+        reset: true
+graph_span: 1w
 experimental:
   color_threshold: true
-update_interval: 15m
+update_interval: 5m
 cache: true
 span:
-  end: month
+  end: day
 header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Månedlig strømkostnad
+  title: Daglig strømkostnad
   show_states: true
 now:
   show: true
@@ -27,37 +37,31 @@ yaxis:
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.accumulated_consumption_orreveien
-  - entity: sensor.nordpool_kwh_oslo_nok_3_10_025
+  - entity: sensor.power_cost_right_now
     name: Kostnad
-    type: column
-    stroke_width: 2
+    type: area
+    stroke_width: 3
     show:
       legend_value: true
-      extremas: true
-    data_generator: |
-      return (entity.attributes.raw_today.map((start, index) => {
-        return [new Date(start["start"]).getTime(), entity.sensor.accumulated_consumption_orreveien/entity.attributes.raw_today[index]["value"]];
-      }));
     group_by:
       func: max
-      duration: 1month
+      duration: 1d
     color_threshold:
       - value: 0
         color: blue
-      - value: 800
+      - value: 20
         color: green
-      - value: 1000
+      - value: 40
         color: green
-      - value: 1500
+      - value: 60
         color: yellow
-      - value: 1800
+      - value: 80
         color: yellow
-      - value: 2000
+      - value: 100
         color: orange
-      - value: 2400
+      - value: 120
         color: orange
-      - value: 3000
+      - value: 140
         color: red
-      - value: 3500
+      - value: 160
         color: red

@@ -2,18 +2,18 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
-graph_span: 1week
+graph_span: 1year
 experimental:
   color_threshold: true
-update_interval: 5m
+update_interval: 15m
 cache: true
 span:
-  end: day
+  end: month
 header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Daglig strømkostnad
+  title: Månedlig strømkostnad
   show_states: true
 now:
   show: true
@@ -27,31 +27,33 @@ yaxis:
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.accumulated_cost_orreveien
+  - entity: sensor.power_cost_right_now
     name: Kostnad
-    type: area
+    type: column
     stroke_width: 2
     show:
       legend_value: true
     group_by:
       func: max
-      duration: 1d
+      duration: 1month
     color_threshold:
       - value: 0
         color: blue
-      - value: 20
+      - value: 800
         color: green
-      - value: 40
+      - value: 1000
         color: green
-      - value: 60
+      - value: 1500
         color: yellow
-      - value: 80
+      - value: 1800
         color: yellow
-      - value: 100
+      - value: 2000
         color: orange
-      - value: 120
+      - value: 2400
         color: orange
-      - value: 140
+      - value: 3000
         color: red
-      - value: 160
+      - value: 3500
+        color: red
+      - value: 4000
         color: red

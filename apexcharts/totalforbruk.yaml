@@ -2,6 +2,16 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
+    zoom:
+      enabled: true
+    toolbar:
+      show: true
+      tools:
+        zoom: true
+        zoomin: true
+        zoomout: true
+        pan: true
+        reset: true
 graph_span: 1week
 experimental:
   color_threshold: true
@@ -59,7 +69,7 @@ series:
         color: red
       - value: 70
         color: red
-  - entity: sensor.accumulated_cost_orreveien
+  - entity: sensor.power_cost_right_now
     name: Daglig strømkostnad
     type: line
     color: 00B3F4
