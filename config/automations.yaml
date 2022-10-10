@@ -1,3 +1,5 @@
+#{{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) }}
+
 description: Turn off water heater in the most expensive hours
 mode: single
 trigger:
@@ -9,25 +11,8 @@ action:
       - conditions:
           - condition: template
             value_template: >-
-              {{
-              ([(state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[0]
-              |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[1] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[2] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[3] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[4] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[5] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[6] |
-                              float(default=0)),
-                              (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[7] |
-                              float(default=0))] | sort)[4] >=
-                              state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
+              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:7] | sort(false))[4] | float(default=0) >=
+                  state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
           - condition: time
             after: "00:00"
             before: "08:00"
@@ -45,19 +30,7 @@ action:
       - conditions:
           - condition: template
             value_template: |2-
-                {{ ([
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[14] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[15] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[16] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[17] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[18] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[19] |
-                                float(default=0))] | sort)[1] >=
+              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) >=
                                 state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
           - condition: time
             after: "15:00"
@@ -76,55 +49,7 @@ action:
       - conditions:
           - condition: template
             value_template: |2-
-               {{ ([
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[0] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[1] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[2] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[3] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[4] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[5] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[6] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[7] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[8] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[9] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[10] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[11] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[12] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[13] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[14] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[15] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[16] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[17] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[18] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[19] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[20] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[21] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[22] |
-                                float(default=0)),
-                                (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','today')[23] |
-                                float(default=0))] | sort)[20] >=
+              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:23] | sort(false))[20] | float(default=0) >=
                                 state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
           - condition: time
             after: "00:01"
