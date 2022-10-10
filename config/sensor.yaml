@@ -10,6 +10,7 @@
         value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_orreveien') | float }}"
 
 # Weather prediction
+# Installed with HACKS from https://github.com/Danielhiversen/home_assistant_weather_data
 - platform: weather_data
   name: Weather
   forecast: 24
