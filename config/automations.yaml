@@ -1,68 +1,69 @@
-description: Turn off water heater in the most expensive hours
-mode: single
-trigger:
-  - platform: state
-    entity_id: sensor.nordpool_kwh_oslo_nok_3_10_025
-condition: []
-action:
-  - choose:
-      - conditions:
-          - condition: template
-            value_template: >-
-              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:7] | sort(false))[4] | float(default=0) >=
-                  state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-          - condition: time
-            after: "00:00"
-            before: "08:00"
-            weekday:
-              - mon
-              - tue
-              - wed
-              - thu
-              - fri
-        sequence:
-          - service: switch.turn_on
+-   id: '1582583923026'
+    alias: Water Heater
+    description: Turn off water heater in the most expensive hours
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: sensor.nordpool_kwh_oslo_nok_3_10_025
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >-
+                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:7] | sort(false))[4] | float(default=0) >=
+                      state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
+              - condition: time
+                after: "00:00"
+                before: "08:00"
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.varmtvannsbereder
+                data: {}
+          - conditions:
+              - condition: template
+                value_template: |2-
+                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) >=
+                                    state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
+              - condition: time
+                after: "15:00"
+                before: "20:00"
+                weekday:
+                  - mon
+                  - tue
+                  - wed
+                  - thu
+                  - fri
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.varmtvannsbereder
+                data: {}
+          - conditions:
+              - condition: template
+                value_template: |2-
+                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:23] | sort(false))[20] | float(default=0) >=
+                                    state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
+              - condition: time
+                after: "00:01"
+                before: "23:59"
+                weekday:
+                  - sat
+                  - sun
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.varmtvannsbereder
+                data: {}
+        default:
+          - service: switch.turn_off
             target:
               entity_id: switch.varmtvannsbereder
             data: {}
-      - conditions:
-          - condition: template
-            value_template: |2-
-              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) >=
-                                state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-          - condition: time
-            after: "15:00"
-            before: "20:00"
-            weekday:
-              - mon
-              - tue
-              - wed
-              - thu
-              - fri
-        sequence:
-          - service: switch.turn_on
-            target:
-              entity_id: switch.varmtvannsbereder
-            data: {}
-      - conditions:
-          - condition: template
-            value_template: |2-
-              {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:23] | sort(false))[20] | float(default=0) >=
-                                state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-          - condition: time
-            after: "00:01"
-            before: "23:59"
-            weekday:
-              - sat
-              - sun
-        sequence:
-          - service: switch.turn_on
-            target:
-              entity_id: switch.varmtvannsbereder
-            data: {}
-    default:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.varmtvannsbereder
-        data: {}
-alias: Water Heater
