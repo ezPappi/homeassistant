@@ -1,5 +1,3 @@
-#{{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) }}
-
 description: Turn off water heater in the most expensive hours
 mode: single
 trigger:
