@@ -81,7 +81,7 @@
   trigger:
   - platform: numeric_state
     entity_id: sensor.weather_temperature
-    below: 12
+    below: 2
   condition: []
   action:
   - device_id: 22c6b76a1091a83cbd2affac41a448ff
