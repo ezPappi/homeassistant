@@ -77,11 +77,12 @@
 
 - id: Frost notifications
   alias: Frost Warning
-  description: ''
+  description: Send notification when temp is below 2C.
   trigger:
   - platform: numeric_state
     entity_id: sensor.weather_temperature
     below: 2
+    attribute: temperature
   condition: []
   action:
   - device_id: 22c6b76a1091a83cbd2affac41a448ff
@@ -89,15 +90,24 @@
     type: notify
     message: Frostvarsel. Temperaturen er under 2C.
     title: Frostvarsel
+  - condition: time
+    after: 05:00:00
+    before: 09:00:00
+    weekday:
+    - fri
+    - thu
+    - wed
+    - tue
+    - mon
   mode: single
-  
 - id: Temp warning water heater
   alias: Water Heater Warning
-  description: ''
+  description: Send notification when the water heater plug is too warm.
   trigger:
   - platform: numeric_state
     entity_id: sensor.varmtvannsbereder_temperature
     above: 60
+    attribute: temperature
   condition: []
   action:
   - device_id: 22c6b76a1091a83cbd2affac41a448ff
