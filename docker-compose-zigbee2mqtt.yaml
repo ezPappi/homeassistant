@@ -29,7 +29,7 @@ services:
     # network_mode: host
     privileged: true
     environment:
-      - TZ=America/New_York
+      - TZ=Europe/Oslo
   portainer:
     container_name: portainer
     image: portainer/portainer
