@@ -74,3 +74,35 @@
             target:
               entity_id: switch.varmtvannsbereder
             data: {}
+
+- id: Frost notifications
+  alias: Frost Warning
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.weather_temperature
+    below: 12
+  condition: []
+  action:
+  - device_id: 22c6b76a1091a83cbd2affac41a448ff
+    domain: mobile_app
+    type: notify
+    message: Frostvarsel. Temperaturen er under 2C.
+    title: Frostvarsel
+  mode: single
+  
+- id: Temp warning water heater
+  alias: Water Heater Warning
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.varmtvannsbereder_temperature
+    above: 60
+  condition: []
+  action:
+  - device_id: 22c6b76a1091a83cbd2affac41a448ff
+    domain: mobile_app
+    type: notify
+    message: Varmevarsel - Bereder. Temperaturen er over 60C!
+    title: Varmevarsel
+  mode: single
