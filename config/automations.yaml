@@ -1,12 +1,17 @@
 -   id: '1582583923026'
     alias: Water Heater
-    description: Turn off water heater in the most expensive hours
+    description: Turn off water heater during most expensive hours
     mode: single
     trigger:
       - platform: state
         entity_id: sensor.nordpool_kwh_oslo_nok_3_10_025
-        from: 'on'
-        to: 'off'
+        domain: switch
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 0
+      - platform: time_pattern
+        seconds: '5'
     condition: []
     action:
       - choose:
