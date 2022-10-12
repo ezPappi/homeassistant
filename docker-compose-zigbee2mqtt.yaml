@@ -1,0 +1,46 @@
+version: "3"
+services:
+  zwavejs2mqtt:
+    container_name: zwavejs2mqtt
+    image: zwavejs/zwavejs2mqtt:1.3.0
+    restart: unless-stopped
+    tty: true
+    stop_signal: SIGINT
+    networks:
+      - zwave
+    devices:
+      - '/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave:rmw'
+    volumes:
+      - ./store:/usr/src/app/store
+    ports:
+      - '8091:8091'
+      - '3000:3000'
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:1.17.1
+    volumes:
+      - ./data:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/zigbe
+    ports:
+      - '8080:8080'
+    restart: always
+    # network_mode: host
+    privileged: true
+    environment:
+      - TZ=America/New_York
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9000:9000"
+    restart: always
+volumes:
+  portainer_data:
+networks:
+  zwave:
+
