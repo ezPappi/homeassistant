@@ -1,0 +1,20 @@
+availability: true
+frontend: {}
+homeassistant: true
+permit_join: true
+mqtt:
+  version: 5
+  base_topic: zigbee2mqtt
+  server: mqtt://1.2.3.1:1883
+serial:
+  port: /dev/ttyACM0
+  adapter: ezsp
+advanced:
+  log_level: debug
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+ota:
+  ikea_ota_use_test_url: true
+device_options:
+  legacy: false
