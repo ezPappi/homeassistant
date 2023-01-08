@@ -1,5 +1,5 @@
 type: custom:apexcharts-card
-graph_span: 27h
+graph_span: 28h
 experimental:
   color_threshold: true
 update_interval: 15m
@@ -8,6 +8,7 @@ header:
   show: true
   colorize_states: true
   standard_format: true
+  show_states: true
 apex_config:
   yaxis:
     min: 0
@@ -18,11 +19,15 @@ apex_config:
       datetimeFormatter:
         month: ddd
         day: ddd
+    animations:
+      enabled: false
+    dataLabels:
+      enabled: false
   chart:
     zoom:
       enabled: true
     toolbar:
-      show: true
+      show: false
       tools:
         zoom: true
         zoomin: true
@@ -90,15 +95,15 @@ apex_config:
 hours_12: false
 cache: true
 span:
-  start: hour
-  offset: '-3h'
+  start: day
+  offset: '-1h'
 now:
   show: true
   label: Now
 series:
   - entity: sensor.nordpool_kwh_oslo_nok_3_10_025
-    type: column
-    name: Strømpris
+    type: area
+    name: Strømpris nå
     stroke_width: 3
     show:
       legend_value: true
@@ -122,9 +127,9 @@ series:
         color: yellow
       - value: 1
         color: orange
-      - value: 1.2
+      - value: 1.5
         color: orange
-      - value: 1.4
+      - value: 2
         color: red
-      - value: 1.6
+      - value: 3
         color: red

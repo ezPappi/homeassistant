@@ -12,72 +12,60 @@ apex_config:
         zoomout: true
         pan: true
         reset: true
-graph_span: 1week
+    animations:
+      enabled: false
+    dataLabels:
+      enabled: false
+graph_span: 56h
 experimental:
   color_threshold: true
-update_interval: 5m
+update_interval: 1m
 cache: true
 span:
-  end: day
+  offset: '-0m'
 header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Daglig KWh og strømpris
+  title: Strømkostnad per time
   show_states: true
 now:
   show: true
   label: Now
 yaxis:
-  - id: forbruk
+  - id: kost
     decimals: 0
     min: 0
     max: auto
-  - id: kost
-    decimals: 1
-    min: 0
-    max: auto
     opposite: true
+    apex_config:
+      forceNiceScale: true
 series:
-  - entity: sensor.accumulated_consumption_orreveien
-    name: Daglig forbruk KWh
-    type: area
-    stroke_width: 2
-    yaxis_id: forbruk
+  - entity: sensor.hourly_power_cost
+    name: Kostnad
+    type: column
+    stroke_width: 3
     show:
       legend_value: true
-      extremas: false
     group_by:
       func: max
-      duration: 1d
+      duration: 1h
     color_threshold:
       - value: 0
         color: blue
-      - value: 20
+      - value: 0.5
         color: green
-      - value: 30
+      - value: 1
         color: green
-      - value: 35
+      - value: 1.5
         color: yellow
-      - value: 40
+      - value: 2
         color: yellow
-      - value: 45
+      - value: 2.5
         color: orange
-      - value: 50
+      - value: 3
         color: orange
-      - value: 60
+      - value: 3.5
         color: red
-      - value: 70
+      - value: 4
         color: red
-  - entity: sensor.power_cost_right_now
-    name: Daglig strømkostnad
-    type: line
-    color: 00B3F4
-    stroke_width: 3
-    yaxis_id: kost
-    show:
-      legend_value: true
-      extremas: false
-    group_by:
-      func: max
-      duration: 1d

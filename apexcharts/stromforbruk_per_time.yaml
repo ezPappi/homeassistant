@@ -2,52 +2,68 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
+    zoom:
+      enabled: true
+    toolbar:
+      show: true
+      tools:
+        zoom: true
+        zoomin: true
+        zoomout: true
+        pan: true
+        reset: true
+    animations:
+      enabled: false
+    dataLabels:
+      enabled: false
 graph_span: 1d
 experimental:
   color_threshold: true
-update_interval: 60s
+update_interval: 5m
+cache: true
 span:
-  end: day
+  end: hour
 header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Strømforbruk i dag
+  title: Strømkforbruk per time
   show_states: true
-now:
-  show: true
-  color: white
-  label: NOW
-hours_12: false
 yaxis:
-  - id: forbruk
+  - id: kost
     decimals: 1
     min: 0
     max: auto
+    opposite: true
+    apex_config:
+      forceNiceScale: true
 series:
-  - entity: sensor.average_power_home
-    name: Gjennomsnittlig forbruk inneværende time
+  - entity: sensor.hourly_power_usage
+    name: Forbruk per time
     type: column
     stroke_width: 2
-    yaxis_id: forbruk
     show:
+      legend_value: true
       extremas: true
-      legend_value: false
     group_by:
       func: max
       duration: 1h
     color_threshold:
       - value: 0
         color: blue
-      - value: 250
+      - value: 2
         color: green
-      - value: 500
+      - value: 3
+        color: green
+      - value: 3.5
         color: yellow
-      - value: 500
+      - value: 4
         color: yellow
-      - value: 750
-        color: yellow
-      - value: 1000
+      - value: 4.5
         color: orange
-      - value: 2000
+      - value: 5
+        color: orange
+      - value: 6
+        color: red
+      - value: 7
         color: red

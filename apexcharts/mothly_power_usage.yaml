@@ -5,7 +5,7 @@ apex_config:
     zoom:
       enabled: true
     toolbar:
-      show: true
+      show: false
       tools:
         zoom: true
         zoomin: true
@@ -16,18 +16,18 @@ apex_config:
       enabled: false
     dataLabels:
       enabled: false
-graph_span: 4w
+graph_span: 1 year
 experimental:
   color_threshold: true
-update_interval: 5m
+update_interval: 15m
 cache: true
 span:
-  end: day
+  end: month
 header:
   show: true
   colorize_states: true
   standard_format: true
-  title: Daglig strømkostnad
+  title: Månedlig Strømkforbruk
   show_states: true
 yaxis:
   - id: kost
@@ -38,32 +38,32 @@ yaxis:
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.daily_electricity_cost
-    name: Kostnad
+  - entity: sensor.monthly_power_usage
+    name: Månedlig forbruk
     type: column
-    stroke_width: 1
-    curve: straight
+    stroke_width: 3
     show:
       legend_value: true
+      extremas: true
     group_by:
       func: max
-      duration: 1d
+      duration: 1 month
     color_threshold:
-      - value: 0
+      - value: 500
         color: blue
-      - value: 20
+      - value: 800
         color: green
-      - value: 40
+      - value: 1000
         color: green
-      - value: 60
+      - value: 1200
         color: yellow
-      - value: 80
+      - value: 1400
         color: yellow
-      - value: 100
+      - value: 1500
         color: orange
-      - value: 120
+      - value: 1800
         color: orange
-      - value: 140
+      - value: 2000
         color: red
-      - value: 160
+      - value: 2500
         color: red

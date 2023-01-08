@@ -2,7 +2,21 @@ type: custom:apexcharts-card
 apex_config:
   chart:
     stacked: true
-graph_span: 1year
+    zoom:
+      enabled: true
+    toolbar:
+      show: true
+      tools:
+        zoom: true
+        zoomin: true
+        zoomout: true
+        pan: true
+        reset: true
+    animations:
+      enabled: false
+    dataLabels:
+      enabled: false
+graph_span: 1 year
 experimental:
   color_threshold: true
 update_interval: 15m
@@ -20,39 +34,38 @@ now:
   label: Now
 yaxis:
   - id: kost
-    decimals: 0
+    decimals: 1
     min: 0
     max: auto
     opposite: true
     apex_config:
       forceNiceScale: true
 series:
-  - entity: sensor.power_cost_right_now
+  - entity: sensor.monthly_power_cost
     name: Kostnad
     type: column
     stroke_width: 2
+    curve: straight
     show:
       legend_value: true
     group_by:
       func: max
-      duration: 1month
+      duration: 1 month
     color_threshold:
       - value: 0
         color: blue
-      - value: 800
+      - value: 500
         color: green
       - value: 1000
         color: green
       - value: 1500
         color: yellow
-      - value: 1800
-        color: yellow
       - value: 2000
-        color: orange
-      - value: 2400
+        color: yellow
+      - value: 2500
         color: orange
       - value: 3000
-        color: red
+        color: orange
       - value: 3500
         color: red
       - value: 4000
