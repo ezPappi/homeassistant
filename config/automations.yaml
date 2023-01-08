@@ -1,94 +1,83 @@
--   id: '1582583923026'
-    alias: Water Heater
-    description: Turn off water heater during most expensive hours
-    mode: single
-    trigger:
-      - platform: state
-        entity_id: sensor.nordpool_kwh_oslo_nok_3_10_025
-        domain: switch
-        for:
-          hours: 0
-          minutes: 0
-          seconds: 0
-      - platform: time_pattern
-        seconds: '5'
-    condition: []
-    action:
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: >-
-                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:7] | sort(false))[4] | float(default=0) >=
-                      state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-              - condition: time
-                after: "00:00"
-                before: "08:00"
-                weekday:
-                  - mon
-                  - tue
-                  - wed
-                  - thu
-                  - fri
-            sequence:
-              - service: switch.turn_on
-                target:
-                  entity_id: switch.varmtvannsbereder
-                data: {}
-          - conditions:
-              - condition: template
-                value_template: |2-
-                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[14:17] | sort(false))[1] | float(default=0) >=
-                                    state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-              - condition: time
-                after: "15:00"
-                before: "20:00"
-                weekday:
-                  - mon
-                  - tue
-                  - wed
-                  - thu
-                  - fri
-            sequence:
-              - service: switch.turn_on
-                target:
-                  entity_id: switch.varmtvannsbereder
-                data: {}
-          - conditions:
-              - condition: template
-                value_template: |2-
-                  {{ (state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'today')[0:23] | sort(false))[20] | float(default=0) >=
-                                    state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025','current_price') | float }}
-              - condition: time
-                after: "00:01"
-                before: "23:59"
-                weekday:
-                  - sat
-                  - sun
-            sequence:
-              - service: switch.turn_on
-                target:
-                  entity_id: switch.varmtvannsbereder
-                data: {}
-        default:
-          - service: switch.turn_off
-            target:
-              entity_id: switch.varmtvannsbereder
-            data: {}
-
+- id: '1665570751142'
+  alias: Water Heater Control
+  description: Turn on and off water heater at given hours
+  trigger:
+  - platform: device
+    type: changed_states
+    device_id: 27b8e91c1625273a6779c772cb98c516
+    entity_id: switch.varmtvannsbereder
+    domain: switch
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  - platform: time_pattern
+    minutes: /3
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 05:00
+        before: 09:00:00
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.varmtvannsbereder
+        data: {}
+    - conditions:
+      - condition: time
+        after: '14:00:00'
+        before: '22:00:00'
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.varmtvannsbereder
+        data: {}
+    - conditions:
+      - condition: time
+        after: 09:00:00
+        before: '23:00:00'
+        weekday:
+        - sat
+        - sun
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.varmtvannsbereder
+        data: {}
+    default:
+    - service: switch.turn_off
+      target:
+        entity_id: switch.varmtvannsbereder
+      data: {}
+  mode: single
 - id: Frost notifications
   alias: Frost Warning
-  description: Send notification when temp is below 2C.
+  description: Send notification when temp is below 3C.
   trigger:
   - platform: numeric_state
     entity_id: sensor.weather_temperature
-    below: 2
+    below: 3
     attribute: temperature
   condition: []
   action:
-  - device_id: 22c6b76a1091a83cbd2affac41a448ff
+  - device_id: da143f2ce901901d8343f82cd811dd42
     domain: mobile_app
     type: notify
-    message: Frostvarsel. Temperaturen er under 2C.
+    message: Frostvarsel. Temperaturen ute er under 3C.
     title: Frostvarsel
   - condition: time
     after: 05:00:00
@@ -99,6 +88,11 @@
     - wed
     - tue
     - mon
+  - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+    domain: mobile_app
+    type: notify
+    message: Frostvarsel. Temperaturen ute er under 3C.
+    title: Frostvarsel
   mode: single
 - id: Temp warning water heater
   alias: Water Heater Warning
@@ -106,13 +100,159 @@
   trigger:
   - platform: numeric_state
     entity_id: sensor.varmtvannsbereder_temperature
-    above: 60
+    above: 65
     attribute: temperature
   condition: []
   action:
   - device_id: 22c6b76a1091a83cbd2affac41a448ff
     domain: mobile_app
     type: notify
-    message: Varmevarsel - Bereder. Temperaturen er over 60C!
+    message: Varmevarsel - Bereder. Temperaturen er over 65C!
     title: Varmevarsel
   mode: single
+- id: heat-pump
+  alias: Panel Heater Office Control
+  description: Turn on and off the heat pump at given hours
+  trigger:
+  - platform: device
+    type: changed_states
+    device_id: e3d1a9a73ea1fcfaf30458ef8bc8ef9f
+    entity_id: switch.panelovn_arbeidsrommet
+    domain: switch
+  - platform: time_pattern
+    minutes: /1
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 05:00:00
+        before: 07:00:00
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id:
+          - switch.panelovn_arbeidsrommet
+        data: {}
+    - conditions:
+      - condition: time
+        after: 05:00:00
+        before: 07:00:00
+        weekday:
+        - sat
+        - sun
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id:
+          - switch.panelovn_arbeidsrommet
+        data: {}
+    default:
+    - service: switch.turn_off
+      target:
+        entity_id:
+        - switch.panelovn_arbeidsrommet
+      data: {}
+  mode: single
+- id: '1667458690299'
+  alias: Tibber - Reload Integration
+  description: ''
+  use_blueprint:
+    path: erlendsellie/tibber_reload.yaml
+    input:
+      entity: sensor.power_orreveien
+      notify: false
+- id: '1671584084641'
+  alias: Door sensor
+  description: Send notification when door sensor is triggered
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dorsensor_contact
+    from: 'on'
+    to: 'off'
+  condition:
+  - condition: device
+    device_id: da143f2ce901901d8343f82cd811dd42
+    domain: device_tracker
+    entity_id: device_tracker.user1s_iphone
+    type: is_not_home
+  - condition: and
+    conditions:
+    - condition: device
+      device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+      domain: device_tracker
+      entity_id: device_tracker.xiami12
+      type: is_not_home
+  action:
+  - device_id: da143f2ce901901d8343f82cd811dd42
+    domain: mobile_app
+    type: notify
+    message: Inngangsdøren åpnet
+    title: Dørsensor
+  mode: single
+- id: '1671886347602'
+  alias: Indoor temperature below 15C
+  description: Send notification when indoor temp drops
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.termometer_temperature
+    below: 15
+    attribute: temperature
+  condition: []
+  action:
+  - device_id: da143f2ce901901d8343f82cd811dd42
+    domain: mobile_app
+    type: notify
+    message: Temp inne under 15C
+    title: Innetemperatur
+  - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+    domain: mobile_app
+    type: notify
+    message: Temp inne under 15C
+    title: Innetemperatur
+  mode: single
+- id: '1671915540144'
+  alias: Indoor temperature above 22C
+  description: Send notification when indoor temp rises
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.termometer_temperature
+    attribute: temperature
+    above: 22
+  condition: []
+  action:
+  - device_id: da143f2ce901901d8343f82cd811dd42
+    domain: mobile_app
+    type: notify
+    message: Temperatur inne over 22C
+    title: Innetemperatur
+  - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+    domain: mobile_app
+    type: notify
+    message: Temperatur inne over 22C
+    title: Innetemperatur
+  mode: single
+- id: '1271584034611'
+  alias: Action TV on and off
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionName: TV Time
+  action:
+  - service: media_player.toggle
+    data: {}
+    target:
+      area_id: living_room
+      device_id: b56fa81e22284e21fce2eacb115a7dcd
+      entity_id:
+      - media_player.living_room_fjernsyn
+      - media_player.rx_v681_d81263
+  initial_state: true

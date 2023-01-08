@@ -1,19 +1,34 @@
 availability: true
 frontend: {}
-homeassistant: true
+homeassistant:
+  legacy_entity_attributes: true
 permit_join: true
 mqtt:
   version: 5
   base_topic: zigbee2mqtt
-  server: mqtt://1.2.3.1:1883
+  server: mqtt://192.168.0.1:1883
+  keepalive: 60
+  password: abcd123456
+  reject_unauthorized: true
+  user: abcdefg
 serial:
   port: /dev/ttyACM0
   adapter: ezsp
 advanced:
-  log_level: debug
+  log_level: info
   homeassistant_legacy_entity_attributes: false
   legacy_api: false
   legacy_availability_payload: false
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 123
+    protocol: tcp4
+    type: '5424'
 ota:
   ikea_ota_use_test_url: true
 device_options:

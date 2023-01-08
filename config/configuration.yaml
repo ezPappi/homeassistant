@@ -17,3 +17,26 @@ frontend:
 input_boolean: !include input_boolean.yaml
 binary_sensor: !include binary_sensor.yaml
 sensor: !include sensor.yaml
+
+# Date and clock
+template:
+  - sensor:
+    - name: "Date and time"
+      state: "{{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%A %B %-d, %H:%M') }}"
+      icon: "mdi:calendar-clock"
+
+  - sensor:
+    - name: "Current time"
+      state: "{{ as_timestamp(states('sensor.date_time_iso')) | timestamp_custom('%H:%M') }}"
+      icon: "mdi:clock"
+      
+ios:
+    actions:
+    - name: Garage
+      background_color: "#000000"
+      label:
+        text: "Garage Door"
+        color: "#ff0000"
+      icon:
+        icon: earth
+        color: "#ffffff"

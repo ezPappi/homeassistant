@@ -1,16 +1,17 @@
+# Minimal configuration of the standard time and date sensor
+- platform: time_date
+  display_options:
+      - 'date_time_iso'
+
+
 - platform: template
   sensors:
-      power_cost_now:
-        friendly_name: "Akuulert strømkostnad per time"
+      hourly_power_cost:
+        friendly_name: "Akumulert strømkostnad per time"
         unit_of_measurement: "NOK"
-        value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_current_hour_orreveien') | float }}"
-      aggregated_daily_power_cost:
-        friendly_name: "Akumulert og aggregert Strømkostnad"
-        unit_of_measurement: "NOK"
-        value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.accumulated_consumption_orreveien') | float }}"
+        value_template: "{{ states('sensor.nordpool_kwh_oslo_nok_3_10_025') | float * states('sensor.hourly_power_usage') | float }}"
 
 # Weather prediction
-# Installed with HACKS from https://github.com/Danielhiversen/home_assistant_weather_data
 - platform: weather_data
   name: Weather
   forecast: 24
@@ -29,9 +30,57 @@
       - highClouds
       - dewpointTemperature
       
+     
 - platform: template
   sensors:
-      weather_data:
-        friendly_name: "Weather Temperature"
-        unit_of_measurement: 'degrees'
-        value_template: "{{ state_attr(' weather_data.karlshus', 'temperature') }}"
+      cheapest_hours_energy_tomorrow:
+        device_class: timestamp
+        friendly_name: Cheapest sequential electricity hours
+        value_template: >
+          {%- set numberOfSequentialHours = 3 -%}
+          {%- set lastHour = 23 -%}
+          {%- set firstHour = 0 -%}
+
+          {%- if state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow_valid') == true -%}
+            {%- set ns = namespace(counter=0, list=[], cheapestHour=today_at("00:00") + timedelta( hours = (24)), cheapestPrice=999.00) -%}
+            {%- for i in range(firstHour + numberOfSequentialHours, lastHour+1) -%}
+              {%- set ns.counter = 0.0 -%}
+              {%- for j in range(i-numberOfSequentialHours, i) -%}
+                {%- set ns.counter = ns.counter + state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow')[j] -%}
+              {%- endfor -%}
+              {%- set ns.list = ns.list + [ns.counter] -%}
+              {%- if ns.counter < ns.cheapestPrice -%}
+                {%- set ns.cheapestPrice = ns.counter -%}
+                {%- set ns.cheapestHour = today_at("00:00") + timedelta( hours = (24 + i - numberOfSequentialHours)) -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.cheapestHour }}
+            {%- set ns.cheapestPrice = ns.cheapestPrice / numberOfSequentialHours -%}
+          {%- endif -%}
+
+- platform: template
+  sensors:
+      most_expensive_hours_energy_tomorrow:
+        device_class: timestamp
+        friendly_name: Most expensive sequential electricity hours
+        value_template: >
+          {%- set numberOfSequentialHours = 3 -%}
+          {%- set lastHour = 23 -%}
+          {%- set firstHour = 0 -%}
+
+          {%- if state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow_valid') == true -%}
+            {%- set ns = namespace(counter=0, list=[], mostexpensiveHour=today_at("00:00") + timedelta( hours = (24)), mostexpensivePrice=999.00) -%}
+            {%- for i in range(firstHour + numberOfSequentialHours, lastHour+1) -%}
+              {%- set ns.counter = 0.0 -%}
+              {%- for j in range(i-numberOfSequentialHours, i) -%}
+                {%- set ns.counter = ns.counter + state_attr('sensor.nordpool_kwh_oslo_nok_3_10_025', 'tomorrow')[j] -%}
+              {%- endfor -%}
+              {%- set ns.list = ns.list + [ns.counter] -%}
+              {%- if ns.counter > ns.mostexpensivePrice -%}
+                {%- set ns.mostexpensivePrice = ns.counter -%}
+                {%- set ns.mostexpensiveHour = today_at("00:00") + timedelta( hours = (24 + i - numberOfSequentialHours)) -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.mostexpensiveHour }}
+            {%- set ns.mostexpensivePrice = ns.mostexpensivePrice / numberOfSequentialHours -%}
+          {%- endif -%}
