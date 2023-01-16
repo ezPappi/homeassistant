@@ -104,7 +104,12 @@
     attribute: temperature
   condition: []
   action:
-  - device_id: 22c6b76a1091a83cbd2affac41a448ff
+  - device_id: da143f2ce901901d8343f82cd811dd42
+    domain: mobile_app
+    type: notify
+    message: Varmevarsel - Bereder. Temperaturen er over 65C!
+    title: Varmevarsel
+  - device_id: a119c922a1b54c16135bc71eff6fbeed
     domain: mobile_app
     type: notify
     message: Varmevarsel - Bereder. Temperaturen er over 65C!
@@ -181,7 +186,7 @@
   - condition: device
     device_id: da143f2ce901901d8343f82cd811dd42
     domain: device_tracker
-    entity_id: device_tracker.user1s_iphone
+    entity_id: device_tracker.marcins_iphone
     type: is_not_home
   - condition: and
     conditions:
@@ -256,3 +261,112 @@
       - media_player.living_room_fjernsyn
       - media_player.rx_v681_d81263
   initial_state: true
+- id: '1673897013374'
+  alias: Dørsensor Terrase
+  description: Send notification when door sensor is triggered
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dorsensor_terrase_contact
+    from: 'on'
+    to: 'off'
+  condition:
+  - condition: device
+    device_id: da143f2ce901901d8343f82cd811dd42
+    domain: device_tracker
+    entity_id: device_tracker.marcins_iphone
+    type: is_not_home
+  - condition: and
+    conditions:
+    - condition: device
+      device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+      domain: device_tracker
+      entity_id: device_tracker.xiami12
+      type: is_not_home
+  action:
+  - device_id: da143f2ce901901d8343f82cd811dd42
+    domain: mobile_app
+    type: notify
+    message: Terrasedøren åpnet
+    title: Dørsensor terrase
+  mode: single
+- id: '1673897512799'
+  alias: Varmepumpa
+  description: Slå av varmepumpa når temp inne er over 21C
+  trigger:
+  - platform: device
+    type: changed_states
+    device_id: 1fe73a8fdd35374b3873a2bdd113c210
+    entity_id: switch.varmepumpe
+    domain: switch
+  - platform: time_pattern
+    minutes: /1
+  condition: []
+  action:
+  - if:
+    - condition: time
+      weekday:
+      - tue
+      - wed
+      - mon
+      - thu
+      - fri
+      after: 05:00:00
+      before: 08:00:00
+    - condition: time
+      weekday:
+      - tue
+      - wed
+      - mon
+      - thu
+      - fri
+      after: '14:00:00'
+      before: '23:00:00'
+    - condition: time
+      weekday:
+      - sun
+      - sat
+      after: 06:00:00
+      before: '23:00:00'
+    - condition: numeric_state
+      entity_id: sensor.termometer_temperature
+      attribute: temperature
+      above: 22
+    then:
+    - type: turn_off
+      device_id: 1fe73a8fdd35374b3873a2bdd113c210
+      entity_id: switch.varmepumpe
+      domain: switch
+    else:
+    - condition: time
+      weekday:
+      - tue
+      - wed
+      - mon
+      - thu
+      - fri
+      after: 05:00:00
+      before: 08:00:00
+    - condition: time
+      weekday:
+      - tue
+      - wed
+      - mon
+      - thu
+      - fri
+      after: '14:00:00'
+      before: '23:00:00'
+    - condition: time
+      weekday:
+      - sun
+      - sat
+      after: 06:00:00
+      before: '23:00:00'
+    - condition: numeric_state
+      entity_id: sensor.termometer_temperature
+      below: 19
+    - type: turn_on
+      device_id: 1fe73a8fdd35374b3873a2bdd113c210
+      entity_id: switch.varmepumpe
+      domain: switch
+  mode: single
