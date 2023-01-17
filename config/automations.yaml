@@ -18,7 +18,7 @@
   - choose:
     - conditions:
       - condition: time
-        after: 05:00
+        after: 05:00:00
         before: 09:00:00
         weekday:
         - mon
@@ -69,26 +69,28 @@
   description: Send notification when temp is below 3C.
   trigger:
   - platform: numeric_state
-    entity_id: sensor.weather_temperature
+    entity_id: sensor.utetermometer_temperature
     below: 3
     attribute: temperature
+  - platform: time_pattern
+    minutes: /1
   condition: []
   action:
-  - device_id: da143f2ce901901d8343f82cd811dd42
-    domain: mobile_app
-    type: notify
-    message: Frostvarsel. Temperaturen ute er under 3C.
-    title: Frostvarsel
   - condition: time
     after: 05:00:00
     before: 09:00:00
     weekday:
-    - fri
-    - thu
-    - wed
-    - tue
     - mon
+    - tue
+    - wed
+    - thu
+    - fri
   - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+    domain: mobile_app
+    type: notify
+    message: Frostvarsel. Temperaturen ute er under 3C.
+    title: Frostvarsel
+  - device_id: da143f2ce901901d8343f82cd811dd42
     domain: mobile_app
     type: notify
     message: Frostvarsel. Temperaturen ute er under 3C.
@@ -291,8 +293,8 @@
     title: Dørsensor terrase
   mode: single
 - id: '1673897512799'
-  alias: Varmepumpa
-  description: Slå av varmepumpa når temp inne er over 21C
+  alias: Varmepumpe
+  description: Slå av og på varmepumpa avhengig av temperaturen inne.
   trigger:
   - platform: device
     type: changed_states
@@ -301,71 +303,50 @@
     domain: switch
   - platform: time_pattern
     minutes: /1
-  condition: []
-  action:
-  - if:
+  condition:
+  - condition: or
+    conditions:
     - condition: time
-      weekday:
-      - tue
-      - wed
-      - mon
-      - thu
-      - fri
       after: 05:00:00
       before: 08:00:00
-    - condition: time
       weekday:
+      - mon
       - tue
       - wed
-      - mon
       - thu
       - fri
-      after: '14:00:00'
-      before: '23:00:00'
     - condition: time
+      after: '13:00:00'
+      before: '22:30:00'
       weekday:
-      - sun
-      - sat
+      - mon
+      - tue
+      - fri
+      - thu
+      - wed
+    - condition: time
       after: 06:00:00
       before: '23:00:00'
+      weekday:
+      - sat
+      - sun
+  action:
+  - if:
     - condition: numeric_state
       entity_id: sensor.termometer_temperature
+      below: 20
       attribute: temperature
-      above: 22
     then:
-    - type: turn_off
+    - type: turn_on
       device_id: 1fe73a8fdd35374b3873a2bdd113c210
       entity_id: switch.varmepumpe
       domain: switch
     else:
-    - condition: time
-      weekday:
-      - tue
-      - wed
-      - mon
-      - thu
-      - fri
-      after: 05:00:00
-      before: 08:00:00
-    - condition: time
-      weekday:
-      - tue
-      - wed
-      - mon
-      - thu
-      - fri
-      after: '14:00:00'
-      before: '23:00:00'
-    - condition: time
-      weekday:
-      - sun
-      - sat
-      after: 06:00:00
-      before: '23:00:00'
     - condition: numeric_state
       entity_id: sensor.termometer_temperature
-      below: 19
-    - type: turn_on
+      above: 21.5
+      attribute: temperature
+    - type: turn_off
       device_id: 1fe73a8fdd35374b3873a2bdd113c210
       entity_id: switch.varmepumpe
       domain: switch
