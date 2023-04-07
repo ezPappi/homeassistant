@@ -406,15 +406,14 @@
     device_id: 1c47f4a8b34e44e886b1d31bb886ff66
     entity_id: switch.varmepumpe
     domain: switch
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.termometer_temperature
-    attribute: temperature
-    value_template: ''
-    below: 19.5
+  condition: []
   action:
   - choose:
     - conditions:
+      - condition: numeric_state
+        entity_id: sensor.termometer_temperature
+        below: 19.5
+        attribute: temperature
       - condition: time
         after: 04:30:00
         before: 07:00:00
@@ -430,6 +429,10 @@
           device_id: 1c47f4a8b34e44e886b1d31bb886ff66
         data: {}
     - conditions:
+      - condition: numeric_state
+        entity_id: sensor.termometer_temperature
+        below: 19.5
+        attribute: temperature
       - condition: time
         after: '14:00:00'
         before: '23:00:00'
@@ -445,6 +448,11 @@
           device_id: 1c47f4a8b34e44e886b1d31bb886ff66
         data: {}
     - conditions:
+      - condition: numeric_state
+        entity_id: sensor.termometer_temperature
+        below: 19.5
+        alias: ' Confirm Termometer temperature is below 19.5'
+        attribute: temperature
       - condition: time
         after: 07:00:00
         before: '23:00:00'
@@ -456,19 +464,20 @@
         target:
           device_id: 1c47f4a8b34e44e886b1d31bb886ff66
         data: {}
-    - conditions:
-      - condition: numeric_state
-        entity_id: sensor.termometer_temperature
-        above: 22.5
-        attribute: temperature
-      sequence:
-      - type: turn_off
-        device_id: 1c47f4a8b34e44e886b1d31bb886ff66
-        entity_id: switch.varmepumpe
-        domain: switch
     default:
     - service: switch.turn_off
       target:
         device_id: 1c47f4a8b34e44e886b1d31bb886ff66
       data: {}
+    enabled: true
+  - if:
+    - condition: numeric_state
+      entity_id: sensor.termometer_temperature
+      above: 22.5
+      attribute: temperature
+    then:
+    - type: turn_off
+      device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+      entity_id: switch.varmepumpe
+      domain: switch
   mode: single
