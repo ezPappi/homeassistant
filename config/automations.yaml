@@ -351,3 +351,20 @@
       entity_id: switch.varmepumpe
       domain: switch
   mode: single
+- id: '1680896268777'
+  alias: Garage door
+  description: Open and close garage door
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 03265fdf7f4b8fc817a01eb2306af5b3
+    type: action
+    subtype: single
+    discovery_id: 0x00124b002911fb52 action_single
+  condition: []
+  action:
+  - type: toggle
+    device_id: 0b2dc8991e4256a1ce0507f01ea89c79
+    entity_id: switch.garage_door_trigger
+    domain: switch
+  mode: single
