@@ -368,3 +368,107 @@
     entity_id: switch.garage_door_trigger
     domain: switch
   mode: single
+- id: '1680897681268'
+  alias: Turn on the hallway light
+  description: Turn on the hallway light when door sensor is triggered
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dorsensor_contact
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 44f4beeaa2b83de0f184f7076be3ba8e
+    entity_id: switch.bryter_01_gang_l1
+    domain: switch
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - type: turn_off
+    device_id: 44f4beeaa2b83de0f184f7076be3ba8e
+    entity_id: switch.bryter_01_gang_l1
+    domain: switch
+  mode: single
+- id: '1680898576670'
+  alias: Varmepumpe
+  description: Turn on and off hear pump
+  trigger:
+  - platform: device
+    type: changed_states
+    device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+    entity_id: switch.varmepumpe
+    domain: switch
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.termometer_temperature
+    attribute: temperature
+    value_template: ''
+    below: 19.5
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 04:30:00
+        before: 07:00:00
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+        data: {}
+    - conditions:
+      - condition: time
+        after: '14:00:00'
+        before: '23:00:00'
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+        data: {}
+    - conditions:
+      - condition: time
+        after: 07:00:00
+        before: '23:00:00'
+        weekday:
+        - sat
+        - sun
+      sequence:
+      - service: switch.turn_on
+        target:
+          device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+        data: {}
+    - conditions:
+      - condition: numeric_state
+        entity_id: sensor.termometer_temperature
+        above: 22.5
+        attribute: temperature
+      sequence:
+      - type: turn_off
+        device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+        entity_id: switch.varmepumpe
+        domain: switch
+    default:
+    - service: switch.turn_off
+      target:
+        device_id: 1c47f4a8b34e44e886b1d31bb886ff66
+      data: {}
+  mode: single
