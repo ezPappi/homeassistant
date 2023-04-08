@@ -72,8 +72,6 @@
     entity_id: sensor.utetermometer_temperature
     below: 3
     attribute: temperature
-  - platform: time_pattern
-    minutes: /1
   condition: []
   action:
   - condition: time
@@ -85,16 +83,11 @@
     - wed
     - thu
     - fri
-  - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+  - device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: mobile_app
     type: notify
     message: Frostvarsel. Temperaturen ute er under 3C.
-    title: Frostvarsel
-  - device_id: da143f2ce901901d8343f82cd811dd42
-    domain: mobile_app
-    type: notify
-    message: Frostvarsel. Temperaturen ute er under 3C.
-    title: Frostvarsel
+    title: 'Frostvarsel. '
   mode: single
 - id: Temp warning water heater
   alias: Water Heater Warning
@@ -176,7 +169,7 @@
       entity: sensor.power_orreveien
       notify: false
 - id: '1671584084641'
-  alias: Door sensor
+  alias: Door sensor alarm
   description: Send notification when door sensor is triggered
   trigger:
   - platform: state
@@ -184,25 +177,22 @@
     - binary_sensor.dorsensor_contact
     from: 'on'
     to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
   condition:
   - condition: device
-    device_id: da143f2ce901901d8343f82cd811dd42
+    device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: device_tracker
     entity_id: device_tracker.marcins_iphone
     type: is_not_home
-  - condition: and
-    conditions:
-    - condition: device
-      device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
-      domain: device_tracker
-      entity_id: device_tracker.xiami12
-      type: is_not_home
   action:
-  - device_id: da143f2ce901901d8343f82cd811dd42
+  - device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: mobile_app
     type: notify
     message: Inngangsdøren åpnet
-    title: Dørsensor
+    title: Inngangsdøren
   mode: single
 - id: '1671886347602'
   alias: Indoor temperature below 15C
@@ -214,10 +204,10 @@
     attribute: temperature
   condition: []
   action:
-  - device_id: da143f2ce901901d8343f82cd811dd42
+  - device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: mobile_app
     type: notify
-    message: Temp inne under 15C
+    message: Temperatur inne under 15C
     title: Innetemperatur
   - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
     domain: mobile_app
@@ -235,12 +225,7 @@
     above: 22
   condition: []
   action:
-  - device_id: da143f2ce901901d8343f82cd811dd42
-    domain: mobile_app
-    type: notify
-    message: Temperatur inne over 22C
-    title: Innetemperatur
-  - device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
+  - device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: mobile_app
     type: notify
     message: Temperatur inne over 22C
@@ -264,7 +249,7 @@
       - media_player.rx_v681_d81263
   initial_state: true
 - id: '1673897013374'
-  alias: Dørsensor Terrase
+  alias: Dørsensor Terrase alarm
   description: Send notification when door sensor is triggered
   trigger:
   - platform: state
@@ -274,23 +259,16 @@
     to: 'off'
   condition:
   - condition: device
-    device_id: da143f2ce901901d8343f82cd811dd42
+    device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: device_tracker
     entity_id: device_tracker.marcins_iphone
     type: is_not_home
-  - condition: and
-    conditions:
-    - condition: device
-      device_id: 4e77dda4bc3f64ef0a87cf34c08956bb
-      domain: device_tracker
-      entity_id: device_tracker.xiami12
-      type: is_not_home
   action:
-  - device_id: da143f2ce901901d8343f82cd811dd42
+  - device_id: cbf9b2aaa452a5504987971e20dc4546
     domain: mobile_app
     type: notify
     message: Terrasedøren åpnet
-    title: Dørsensor terrase
+    title: Terrasedøren
   mode: single
 - id: '1673897512799'
   alias: Varmepumpe
@@ -350,7 +328,7 @@
       device_id: 1fe73a8fdd35374b3873a2bdd113c210
       entity_id: switch.varmepumpe
       domain: switch
-  mode: single
+    mode: single
 - id: '1680896268777'
   alias: Garage door
   description: Open and close garage door
@@ -480,4 +458,99 @@
       device_id: 1c47f4a8b34e44e886b1d31bb886ff66
       entity_id: switch.varmepumpe
       domain: switch
+  mode: single
+- id: '1680904760347'
+  alias: Termostat
+  description: Turn on and off away mode
+  trigger:
+  - platform: device
+    type: changed_states
+    device_id: cb4d76ae1f5c961046c356e13573d911
+    entity_id: switch.termostat_away_mode
+    domain: switch
+  - platform: time_pattern
+    minutes: /3
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 08:00:00
+        before: '14:00:00'
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id:
+          - switch.termostat_away_mode
+          device_id: cb4d76ae1f5c961046c356e13573d911
+        data: {}
+    - conditions:
+      - condition: time
+        after: '23:00:00'
+        before: 05:00:00
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id:
+          - switch.termostat_away_mode
+          device_id: cb4d76ae1f5c961046c356e13573d911
+        data: {}
+    - conditions:
+      - condition: time
+        after: '23:00:00'
+        before: 08:00:00
+        weekday:
+        - sat
+        - sun
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id:
+          - switch.termostat_away_mode
+          device_id: cb4d76ae1f5c961046c356e13573d911
+        data: {}
+    default:
+    - service: switch.turn_off
+      target:
+        entity_id:
+        - switch.termostat_away_mode
+        device_id: cb4d76ae1f5c961046c356e13573d911
+      data: {}
+  mode: single
+- id: '1680953048790'
+  alias: Auto close garage door
+  description: Auto close garage door when mobiles are out of reach
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.marcins_iphone
+    from: home
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    to: not_home
+  - platform: time_pattern
+    minutes: /1
+  condition:
+  - condition: state
+    entity_id: binary_sensor.garage_door_garage_door_contact
+    state: 'on'
+  action:
+  - type: turn_off
+    device_id: 0b2dc8991e4256a1ce0507f01ea89c79
+    entity_id: switch.garage_door_trigger
+    domain: switch
   mode: single
